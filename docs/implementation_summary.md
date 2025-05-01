@@ -36,7 +36,16 @@ We implemented functionality for creating and manipulating return tracks:
 
 This allows for creating return tracks, loading effects onto them, and sending audio from tracks to return tracks, which is essential for setting up send effects in Ableton Live.
 
-### 4. MCP Server Integration
+### 4. Track Volume Control
+
+We added functionality to control track volume levels with dB conversion:
+
+- `_set_track_volume`: Sets the volume level of a track
+- `_linear_to_db`: Helper function to convert linear volume values to dB
+
+This allows for precise control of track volume levels.
+
+### 5. MCP Server Integration
 
 We registered the functions in the MCP Server to expose them through the API:
 
@@ -46,8 +55,10 @@ We registered the functions in the MCP Server to expose them through the API:
 - `set_eq_global`
 - `apply_eq_preset`
 - `create_return_track`
+- `set_send_level`
+- `set_track_volume`
 
-### 5. Parameter Naming Conventions
+### 6. Parameter Naming Conventions
 
 We identified and documented the parameter naming conventions used by Ableton Live, particularly for the EQ Eight device:
 
@@ -55,7 +66,7 @@ We identified and documented the parameter naming conventions used by Ableton Li
 - Band enable/disable: `{band_number} Filter On A`
 - Global parameters: Simple names like `Scale`
 
-### 6. Value Normalization
+### 7. Value Normalization
 
 We implemented utility functions for converting between human-readable values and Ableton's internal normalized values:
 
@@ -91,6 +102,24 @@ We created another test script (`audio_effects_test.py`) to verify that our gene
 
 All tests passed successfully, confirming that our implementation is truly device-agnostic and can handle a wide variety of audio effects with different parameter types.
 
+### 4. Send Control Testing
+
+We created a test script (`send_control_test.py`) to verify the send level control functionality:
+
+- Tested setting send levels from tracks to return tracks
+- Verified that the send levels are correctly applied
+
+All tests passed successfully, confirming that our implementation correctly handles send level control.
+
+### 5. Volume Control Testing
+
+We created a test script (`volume_control_test.py`) to verify the track volume control functionality:
+
+- Tested setting track volume levels with dB conversion
+- Verified that the volume levels are correctly applied
+
+All tests passed successfully, confirming that our implementation correctly handles track volume control.
+
 ## Challenges and Solutions
 
 ### 1. Parameter Naming
@@ -119,6 +148,7 @@ The implementation successfully meets the requirements for device parameter cont
 2. **Precise Control**: Parameters can be set with high precision, including frequency, gain, and Q factor for EQ bands.
 3. **Discoverability**: Users can query available parameters for any device.
 4. **Specialized Functions**: The system provides specialized functions for common operations on the EQ Eight device.
+5. **Track Volume Control**: The system can control track volume levels with dB conversion.
 
 ## Future Work
 

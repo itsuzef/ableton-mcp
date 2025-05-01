@@ -35,6 +35,7 @@ The system works as follows:
 | `create_return_track` | Create a new return track | None (return tracks are always added at the end) |
 | `set_track_name` | Set the name of a track | `track_index`: The index of the track, `name`: The new name |
 | `set_send_level` | Set the level of a send from a track to a return track | `track_index`: The index of the track, `send_index`: The index of the send, `value`: The value to set (0.0 to 1.0) |
+| `set_track_volume` | Set the volume level of a track | `track_index`: The index of the track, `volume`: The new volume level in dB |
 
 ### Clip Management
 

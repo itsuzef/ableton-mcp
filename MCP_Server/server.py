@@ -1115,6 +1115,33 @@ def set_send_level(ctx: Context, track_index: int, send_index: int, value: float
         logger.error(f"Error setting send level: {str(e)}")
         return f"Error setting send level: {str(e)}"
 
+@mcp.tool()
+def set_track_volume(ctx: Context, track_index: int, value: float) -> str:
+    """
+    Set the volume of a track.
+    
+    Parameters:
+    - track_index: The index of the track to set the volume for
+    - value: The volume value (0.0 to 1.0)
+    """
+    try:
+        ableton = get_ableton_connection()
+        result = ableton.send_command("set_track_volume", {
+            "track_index": track_index, 
+            "value": value
+        })
+        
+        volume_db = result.get('volume_db', 'unknown')
+        if volume_db == float('-inf'):
+            volume_db_str = "-∞ dB"
+        else:
+            volume_db_str = f"{volume_db:.1f} dB"
+            
+        return f"Set volume of track {result.get('track_name', 'unknown')} to {volume_db_str}"
+    except Exception as e:
+        logger.error(f"Error setting track volume: {str(e)}")
+        return f"Error setting track volume: {str(e)}"
+
 # Main execution
 def main():
     """Run the MCP server"""

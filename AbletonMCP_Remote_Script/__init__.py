@@ -230,7 +230,7 @@ class AbletonMCP(ControlSurface):
             elif command_type in ["create_midi_track", "set_track_name", 
                                  "create_clip", "add_notes_to_clip", "set_clip_name", 
                                  "set_tempo", "fire_clip", "stop_clip",
-                                 "start_playback", "stop_playback", "load_browser_item", "create_return_track", "set_send_level"]:
+                                 "start_playback", "stop_playback", "load_browser_item", "create_return_track", "set_send_level", "set_track_volume"]:
                 # Use a thread-safe approach with a response queue
                 response_queue = queue.Queue()
                 
@@ -286,6 +286,10 @@ class AbletonMCP(ControlSurface):
                             send_index = params.get("send_index", 0)
                             value = params.get("value", 0.0)
                             result = self._set_send_level(track_index, send_index, value)
+                        elif command_type == "set_track_volume":
+                            track_index = params.get("track_index", 0)
+                            value = params.get("value", 0.0)
+                            result = self._set_track_volume(track_index, value)
                         
                         # Put the result in the queue
                         response_queue.put({"status": "success", "result": result})
@@ -1724,3 +1728,55 @@ class AbletonMCP(ControlSurface):
             self.log_message("Error setting send level: " + str(e))
             self.log_message(traceback.format_exc())
             raise
+    
+    def _set_track_volume(self, track_index, value):
+        """Set the volume of a track
+        
+        Args:
+            track_index: Index of the track
+            value: Volume value (0.0 to 1.0)
+        
+        Returns:
+            Dictionary with track info and new volume value
+        """
+        try:
+            # Get the track using the helper function that handles return tracks
+            track = self._get_track_by_index(track_index)
+            
+            # Set the volume value (0.0 to 1.0)
+            track.mixer_device.volume.value = value
+            
+            result = {
+                "track_name": track.name,
+                "volume": track.mixer_device.volume.value,
+                "volume_db": self._linear_to_db(track.mixer_device.volume.value)
+            }
+            return result
+        except Exception as e:
+            self.log_message("Error setting track volume: " + str(e))
+            self.log_message(traceback.format_exc())
+            raise
+    
+    def _linear_to_db(self, value):
+        """Convert a linear volume value (0.0 to 1.0) to dB
+        
+        Args:
+            value: Linear volume value (0.0 to 1.0)
+        
+        Returns:
+            Volume in dB
+        """
+        if value <= 0:
+            return float('-inf')  # -infinity dB for zero volume
+        
+        # Ableton's volume mapping is approximately:
+        # 0.85 -> 0dB
+        # 0.0 -> -inf dB
+        # 1.0 -> +6dB
+        
+        if value < 0.85:
+            # Below 0dB
+            return 20 * math.log10(value / 0.85)
+        else:
+            # Above 0dB (0.85 to 1.0 maps to 0dB to +6dB)
+            return 6 * (value - 0.85) / 0.15

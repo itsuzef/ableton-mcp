@@ -1443,21 +1443,6 @@ class AbletonMCP(ControlSurface):
             self.log_message(traceback.format_exc())
             raise
     
-    def _get_device_type(self, device):
-        """Get the type of a device"""
-        if device.class_name == "PluginDevice":
-            return "plugin"
-        elif device.class_name == "InstrumentGroupDevice":
-            return "instrument_rack"
-        elif device.class_name == "DrumGroupDevice":
-            return "drum_rack"
-        elif device.can_have_drum_pads:
-            return "drum_device"
-        elif device.can_have_chains:
-            return "rack"
-        else:
-            return "device"
-    
     def get_browser_tree(self, category_type="all"):
         """
         Get a simplified tree of browser categories.
@@ -1766,8 +1751,12 @@ class AbletonMCP(ControlSurface):
         Returns:
             Volume in dB
         """
-        if value <= 0:
-            return float('-inf')  # -infinity dB for zero volume
+        # Add a small epsilon to prevent extreme negative values
+        # when value is very close to zero but not exactly zero
+        epsilon = 1e-7
+        
+        if value <= epsilon:
+            return float('-inf')  # -infinity dB for zero or near-zero volume
         
         # Ableton's volume mapping is approximately:
         # 0.85 -> 0dB

@@ -106,7 +106,8 @@ class AbletonConnection:
             "create_clip", "add_notes_to_clip", "set_clip_name",
             "set_tempo", "fire_clip", "stop_clip", "start_playback", "stop_playback",
             "load_browser_item", "load_drum_kit", "set_device_parameter",
-            "set_eq_band", "set_eq_global", "apply_eq_preset", "create_return_track"
+            "set_eq_band", "set_eq_global", "apply_eq_preset", "create_return_track",
+            "set_send_level", "set_track_volume"
         ]
         
         try:

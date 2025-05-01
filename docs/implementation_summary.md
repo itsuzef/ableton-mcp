@@ -25,7 +25,18 @@ We added specialized functions for the EQ Eight device:
 
 These functions provide a more intuitive interface for controlling the EQ Eight device.
 
-### 3. MCP Server Integration
+### 3. Return Track Support
+
+We implemented functionality for creating and manipulating return tracks:
+
+- `_create_return_track`: Creates a new return track in the Ableton Live session
+- `_get_track_by_index`: Enhanced to properly handle both regular tracks and return tracks
+- `_set_send_level`: Controls the send level from a track to a return track
+- Updated all track-related functions to use the `_get_track_by_index` helper function
+
+This allows for creating return tracks, loading effects onto them, and sending audio from tracks to return tracks, which is essential for setting up send effects in Ableton Live.
+
+### 4. MCP Server Integration
 
 We registered the functions in the MCP Server to expose them through the API:
 
@@ -34,8 +45,9 @@ We registered the functions in the MCP Server to expose them through the API:
 - `set_eq_band`
 - `set_eq_global`
 - `apply_eq_preset`
+- `create_return_track`
 
-### 4. Parameter Naming Conventions
+### 5. Parameter Naming Conventions
 
 We identified and documented the parameter naming conventions used by Ableton Live, particularly for the EQ Eight device:
 
@@ -43,7 +55,7 @@ We identified and documented the parameter naming conventions used by Ableton Li
 - Band enable/disable: `{band_number} Filter On A`
 - Global parameters: Simple names like `Scale`
 
-### 5. Value Normalization
+### 6. Value Normalization
 
 We implemented utility functions for converting between human-readable values and Ableton's internal normalized values:
 

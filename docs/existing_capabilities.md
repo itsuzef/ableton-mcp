@@ -32,7 +32,9 @@ The system works as follows:
 |------|-------------|------------|
 | `get_track_info` | Get detailed information about a specific track | `track_index`: The index of the track |
 | `create_midi_track` | Create a new MIDI track | `index`: The index to insert the track at (-1 = end of list) |
+| `create_return_track` | Create a new return track | None (return tracks are always added at the end) |
 | `set_track_name` | Set the name of a track | `track_index`: The index of the track, `name`: The new name |
+| `set_send_level` | Set the level of a send from a track to a return track | `track_index`: The index of the track, `send_index`: The index of the send, `value`: The value to set (0.0 to 1.0) |
 
 ### Clip Management
 

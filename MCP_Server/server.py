@@ -264,7 +264,7 @@ def get_session_info(ctx: Context) -> str:
     """Get detailed information about the current Ableton session"""
     try:
         ableton = get_ableton_connection()
-        result = ableton.send_command("get_session_info")
+        result = ableton.send_command("get_session_info", {})
         return json.dumps(result, indent=2)
     except Exception as e:
         logger.error(f"Error getting session info from Ableton: {str(e)}")
@@ -420,7 +420,6 @@ def set_tempo(ctx: Context, tempo: float) -> str:
     except Exception as e:
         logger.error(f"Error setting tempo: {str(e)}")
         return f"Error setting tempo: {str(e)}"
-
 
 @mcp.tool()
 def load_instrument_or_effect(ctx: Context, track_index: int, uri: str) -> str:
@@ -1093,6 +1092,28 @@ def apply_eq_preset(ctx: Context, track_index: int, device_index: int, preset_ty
     except Exception as e:
         logger.error(f"Error applying EQ preset: {str(e)}")
         return f"Error applying EQ preset: {str(e)}"
+
+@mcp.tool()
+def set_send_level(ctx: Context, track_index: int, send_index: int, value: float) -> str:
+    """
+    Set the level of a send from a track to a return track.
+    
+    Parameters:
+    - track_index: The index of the track containing the send
+    - send_index: The index of the send (corresponds to the return track index)
+    - value: The value to set the send level to (0.0 to 1.0)
+    """
+    try:
+        ableton = get_ableton_connection()
+        result = ableton.send_command("set_send_level", {
+            "track_index": track_index, 
+            "send_index": send_index, 
+            "value": value
+        })
+        return f"Set send level from track {result.get('track_name', 'unknown')} to {result.get('return_track_name', 'unknown')} to {result.get('value', value)}"
+    except Exception as e:
+        logger.error(f"Error setting send level: {str(e)}")
+        return f"Error setting send level: {str(e)}"
 
 # Main execution
 def main():

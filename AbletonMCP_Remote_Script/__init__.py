@@ -230,7 +230,7 @@ class AbletonMCP(ControlSurface):
             elif command_type in ["create_midi_track", "set_track_name", 
                                  "create_clip", "add_notes_to_clip", "set_clip_name", 
                                  "set_tempo", "fire_clip", "stop_clip",
-                                 "start_playback", "stop_playback", "load_browser_item", "create_return_track"]:
+                                 "start_playback", "stop_playback", "load_browser_item", "create_return_track", "set_send_level"]:
                 # Use a thread-safe approach with a response queue
                 response_queue = queue.Queue()
                 
@@ -281,6 +281,11 @@ class AbletonMCP(ControlSurface):
                             result = self._load_browser_item(track_index, item_uri)
                         elif command_type == "create_return_track":
                             result = self._create_return_track()
+                        elif command_type == "set_send_level":
+                            track_index = params.get("track_index", 0)
+                            send_index = params.get("send_index", 0)
+                            value = params.get("value", 0.0)
+                            result = self._set_send_level(track_index, send_index, value)
                         
                         # Put the result in the queue
                         response_queue.put({"status": "success", "result": result})
@@ -1687,5 +1692,35 @@ class AbletonMCP(ControlSurface):
             
         except Exception as e:
             self.log_message("Error getting browser items at path: {0}".format(str(e)))
+            self.log_message(traceback.format_exc())
+            raise
+    
+    def _set_send_level(self, track_index, send_index, value):
+        """Set the level of a send from a track to a return track"""
+        try:
+            # Get the track using the helper function that handles return tracks
+            track = self._get_track_by_index(track_index)
+            
+            # Return tracks don't have sends, so make sure this is a regular track
+            if track_index >= len(self._song.tracks):
+                raise ValueError("Return tracks don't have sends")
+            
+            # Verify the send index is valid
+            if send_index < 0 or send_index >= len(track.mixer_device.sends):
+                raise IndexError("Send index out of range")
+            
+            # Get the send and set its value
+            send = track.mixer_device.sends[send_index]
+            send.value = value
+            
+            result = {
+                "track_name": track.name,
+                "send_index": send_index,
+                "return_track_name": self._song.return_tracks[send_index].name,
+                "value": send.value
+            }
+            return result
+        except Exception as e:
+            self.log_message("Error setting send level: " + str(e))
             self.log_message(traceback.format_exc())
             raise

@@ -1,4 +1,5 @@
 # AbletonMCP Enhanced - AI Control for Ableton Live
+[![smithery badge](https://smithery.ai/badge/@itsuzef/ableton-mcp)](https://smithery.ai/server/@itsuzef/ableton-mcp/deployments)
 
 This tool connects Ableton Live to AI assistants like Claude and Cursor through the Model Context Protocol (MCP), allowing you to control Ableton Live with natural language commands.
 
@@ -15,7 +16,19 @@ This is an enhanced fork of the original [AbletonMCP](https://github.com/ahujasi
 
 ## Quick Start Guide for Music Producers
 
-### Step 1: Install Python (One-time setup)
+### Option 1: Install via Smithery (Easiest)
+
+If you're using Claude Desktop, the easiest way to install is with Smithery:
+
+```bash
+npx -y @smithery/cli install @itsuzef/ableton-mcp --client claude
+```
+
+This will automatically set up the MCP server in Claude Desktop. You'll still need to install the Ableton Remote Script (see Step 4 below).
+
+### Option 2: Manual Installation
+
+#### Step 1: Install Python (One-time setup)
 
 If you don't have Python installed:
 
@@ -25,7 +38,7 @@ If you don't have Python installed:
 
 2. During installation, make sure to check "Add Python to PATH"
 
-### Step 2: Install AbletonMCP (One-time setup)
+#### Step 2: Install AbletonMCP (One-time setup)
 
 Open Terminal (Mac) or Command Prompt (Windows) and run these commands:
 
@@ -43,7 +56,7 @@ ableton-mcp-env\Scripts\activate
 pip install git+https://github.com/itsuzef/ableton-mcp.git
 ```
 
-### Step 3: Install the Ableton Remote Script (One-time setup)
+#### Step 3: Install the Ableton Remote Script (One-time setup)
 
 With the same Terminal/Command Prompt window open:
 
@@ -54,7 +67,7 @@ ableton-mcp install
 
 If the automatic installation doesn't work, the tool will tell you where to manually place the files.
 
-### Step 4: Set Up Ableton Live (One-time setup)
+#### Step 4: Set Up Ableton Live (One-time setup)
 
 1. Launch Ableton Live
 2. Go to Preferences → Link, Tempo & MIDI
@@ -62,7 +75,7 @@ If the automatic installation doesn't work, the tool will tell you where to manu
 4. Set Input and Output to "None"
 5. Click "OK" to save settings
 
-### Step 5: Connect to Your AI Assistant
+#### Step 5: Connect to Your AI Assistant
 
 #### For Claude Desktop:
 
@@ -101,11 +114,13 @@ Replace `PATH_TO_YOUR_ENVIRONMENT` as explained above.
 
 Any AI tool that supports MCP can be connected by pointing it to the `ableton-mcp server` command in your environment.
 
-### Step 6: Start Creating Music with AI!
+#### Step 6: Start Creating Music with AI!
 
 1. Open Ableton Live
 2. Open your AI assistant (Claude, Cursor, etc.)
 3. Start asking your AI to control Ableton!
+
+> **Note**: If you installed via Smithery (Option 1), you can skip steps 1-3 and 5 of the manual installation. You only need to install the Ableton Remote Script (Step 4) and then you're ready to go!
 
 ## Example Commands to Try
 

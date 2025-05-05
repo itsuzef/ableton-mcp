@@ -1146,7 +1146,14 @@ def set_track_volume(ctx: Context, track_index: int, value: float) -> str:
 # Main execution
 def main():
     """Run the MCP server"""
-    mcp.run()
+    import os
+    
+    # Get host and port from environment variables (set by CLI)
+    host = os.environ.get("MCP_HOST", "127.0.0.1")
+    port = int(os.environ.get("MCP_PORT", "8000"))
+    
+    # Start the server
+    mcp.serve(host=host, port=port)
 
 if __name__ == "__main__":
     main()

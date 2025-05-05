@@ -366,6 +366,10 @@ class AbletonMCP(ControlSurface):
                 device_index = params.get("device_index", 0)
                 preset_type = params.get("preset_type", "")
                 response["result"] = self._apply_eq_preset(track_index, device_index, preset_type)
+            elif command_type == "set_track_volume":
+                track_index = params.get("track_index", 0)
+                value = params.get("value", 0.0)
+                response["result"] = self._set_track_volume(track_index, value)
             else:
                 response["status"] = "error"
                 response["message"] = "Unknown command: " + command_type
@@ -910,7 +914,6 @@ class AbletonMCP(ControlSurface):
                     "value": param.value,
                     "min": param.min,
                     "max": param.max,
-                    "is_quantized": param.is_quantized,
                 }
                 
                 # Add value items for quantized parameters (e.g., filter types)

@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from contextlib import asynccontextmanager
 from typing import AsyncIterator, Dict, Any, List, Union, Optional
+import argparse
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
@@ -1147,13 +1148,29 @@ def set_track_volume(ctx: Context, track_index: int, value: float) -> str:
 def main():
     """Run the MCP server"""
     import os
+    import argparse
     
-    # Get host and port from environment variables (set by CLI)
-    host = os.environ.get("MCP_HOST", "127.0.0.1")
-    port = int(os.environ.get("MCP_PORT", "8000"))
+    # Set up command line argument parsing
+    parser = argparse.ArgumentParser(description='Run the Ableton MCP Server')
+    parser.add_argument('--host', default="127.0.0.1", help='Host to bind the server to')
+    parser.add_argument('--port', type=int, default=8000, help='Port to bind the server to')
+    parser.add_argument('--transport', default="sse", choices=["sse", "stdio"], help='Transport method (sse or stdio)')
+    args = parser.parse_args()
     
-    # Start the server
-    mcp.serve(host=host, port=port)
+    # Get host and port from arguments or environment variables
+    host = args.host or os.environ.get("MCP_HOST", "127.0.0.1")
+    port = args.port or int(os.environ.get("MCP_PORT", "8000"))
+    transport = args.transport
+    
+    # Log startup information
+    logger.info(f"Starting Ableton MCP Server on {host}:{port} with {transport} transport")
+    
+    # Store port and transport in environment variables for FastMCP to use
+    os.environ["MCP_PORT"] = str(port)
+    os.environ["MCP_TRANSPORT"] = transport
+    
+    # Start the server without parameters (FastMCP will read from environment variables)
+    mcp.run()
 
 if __name__ == "__main__":
     main()
